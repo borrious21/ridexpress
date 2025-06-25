@@ -5,6 +5,7 @@ import crypto from "crypto";
 import mongoose from "mongoose";
 import config from "../config/config.js";
 import sendEmail from "../utils/email.js";
+import { ADMIN, USER } from "../constants/roles.js";
 
 const signup = async (data) => {
   const user = await User.findOne({ email: data.email });
@@ -15,12 +16,18 @@ const signup = async (data) => {
 
   const hashedPassword = bcrypt.hashSync(data.password, 10);
 
+  const requestedRoles = Array.isArray(data.roles)
+    ? data.roles.map((r) => String(r).toUpperCase())
+    : [];
+  const roles = requestedRoles.includes(ADMIN) ? [ADMIN] : [USER];
+
   const signupUser = await User.create({
     name: data.name,
     address: data.address,
     email: data.email,
     password: hashedPassword,
     phone: data.phone,
+    roles,
   });
 
   return {
