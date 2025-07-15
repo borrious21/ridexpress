@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard - RideXpress</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r flex flex-col p-4">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-orange-500 mb-2">RideXpress</h2>
+                <div class="flex items-center gap-3 mb-6">
+                    <img class="w-10 h-10 rounded-full" src="https://i.pravatar.cc/40?img=3" alt="Admin" />
+                    <div>
+                        <p class="font-semibold">Admin User</p>
+                        <p class="text-gray-500 text-sm">admin@ridexpress.com</p>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <ul class="space-y-3">
+                    <li>
+                        <a href="dashboard.html"
+                            class="flex items-center gap-3 bg-orange-500 text-white rounded-lg px-3 py-2">
+                            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="users.html" class="flex items-center gap-3 hover:bg-gray-100 rounded-lg px-3 py-2">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li>
+                        <a href="vehicles.html" class="flex items-center gap-3 hover:bg-gray-100 rounded-lg px-3 py-2">
+                            <i data-lucide="car" class="w-5 h-5"></i>
+                            Vehicles
+                        </a>
+                    </li>
+                    <li>
+                        <a href="bookings.html" class="flex items-center gap-3 hover:bg-gray-100 rounded-lg px-3 py-2">
+                            <i data-lucide="calendar" class="w-5 h-5"></i>
+                            Bookings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="logout.html" class="flex items-center gap-3 hover:bg-gray-100 rounded-lg px-3 py-2">
+                            <i data-lucide="log-out" class="w-5 h-5"></i>
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                <h1 class="text-3xl font-bold">Welcome, Admin!</h1>
+                <div class="flex gap-2">
+                    <button
+                        class="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                        Add New User
+                    </button>
+                    <button
+                        class="flex items-center gap-2 bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition">
+                        <img src="https://img.icons8.com/?size=100&id=qRo6mXkL8iFE&format=png&color=000000"
+                            alt="Add Vehicle" class="w-5 h-5">
+                        Add New Vehicle
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div class="bg-white rounded-lg p-4">
+                    <p class="text-gray-500">Total Users</p>
+                    <h2 class="text-2xl font-bold mt-1">8,945</h2>
+                    <span class="text-green-500 text-sm">↑ 5.2%</span>
+                </div>
+                <div class="bg-white rounded-lg p-4">
+                    <p class="text-gray-500">Available Vehicles</p>
+                    <h2 class="text-2xl font-bold mt-1">348</h2>
+                    <span class="text-red-500 text-sm">↓ 1.8%</span>
+                </div>
+                <div class="bg-white rounded-lg p-4">
+                    <p class="text-gray-500">Active Bookings</p>
+                    <h2 class="text-2xl font-bold mt-1">1,201</h2>
+                    <span class="text-green-500 text-sm">↑ 8.7%</span>
+                </div>
+                <div class="bg-white rounded-lg p-4">
+                    <p class="text-gray-500">Total Revenue</p>
+                    <h2 class="text-2xl font-bold mt-1">$456k</h2>
+                    <span class="text-green-500 text-sm">↑ 3.5%</span>
+                </div>
+            </div>
+
+            <!-- Middle Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Vehicle Availability -->
+                <div class="bg-white rounded-lg p-4 col-span-2">
+                    <h3 class="font-semibold text-lg mb-2">Vehicle Availability</h3>
+                    <p class="text-sm text-gray-500 mb-3">Current status of the vehicle fleet.</p>
+                    <canvas id="vehicleChart"></canvas>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-lg p-4">
+                    <h3 class="font-semibold text-lg mb-2">Recent Activity</h3>
+                    <ul class="mt-2 space-y-2 text-sm">
+                        <li><b>New booking</b> for Tesla Model 3 by John Doe <span class="block text-gray-400">5 mins
+                                ago</span></li>
+                        <li><b>New user registered:</b> Jane Smith <span class="block text-gray-400">3 hours ago</span>
+                        </li>
+                        <li><b>Booking #RX2024-0012</b> completed <span class="block text-gray-400">yesterday</span>
+                        </li>
+                        <li><b>Vehicle added:</b> Ford Mustang <span class="block text-gray-400">yesterday</span></li>
+                        <li><b>Booking</b> for Toyota Camry by Alex Lee <span
+                                class="block text-gray-400">yesterday</span></li>
+                        <li><b>New user registered:</b> Michael Brown <span class="block text-gray-400">2 days
+                                ago</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- User Growth Trend -->
+            <div class="bg-white rounded-lg p-4 mt-4">
+                <h3 class="font-semibold text-lg mb-2">User Growth Trend</h3>
+                <p class="text-sm text-gray-500 mb-3">New user registrations over the last 6 months.</p>
+                <canvas id="growthChart"></canvas>
+            </div>
+        </main>
+    </div>
+
+    <!-- Chart.js and Lucide Icons -->
+    <script>
+        const totalFleet = 1200 + 348 + 50;
+        const availablePct = (1200 / totalFleet) * 100;
+        const rentedPct = (348 / totalFleet) * 100;
+        const maintenancePct = (50 / totalFleet) * 100;
+
+        new Chart(document.getElementById('vehicleChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Available', 'Rented', 'Maintenance'],
+                datasets: [{
+                    label: 'Fleet (%)',
+                    data: [availablePct, rentedPct, maintenancePct],
+                    backgroundColor: ['#facc15', '#60a5fa', '#f87171'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `${ctx.parsed.y.toFixed(1)}%`
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { callback: v => v + '%' }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('growthChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'New Users',
+                    data: [500, 800, 1200, 1600, 2100, 2500],
+                    borderColor: '#f97316',
+                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
