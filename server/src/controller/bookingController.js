@@ -38,8 +38,40 @@ const deleteBooking = async (req, res) => {
   }
 };
 
+const getBookedByUser = async (req, res) => {
+  try {
+    const input = req.user._id;
+
+    if (!input) {
+      return res.status(404).send("Booking not Found");
+    }
+
+    const booking = await bookingServices.getBookedByUser(input);
+    res.status(200).json(booking);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+const getBookedByID = async (req, res) => {
+  try {
+    const input = req.params.id;
+
+    if (!input) {
+      return res.status(404).send("Id not Found");
+    }
+
+    const booking = await bookingServices.getBookedByID(input);
+    res.status(200).json(booking);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
 export default {
   createBooking,
   getBooking,
   deleteBooking,
+  getBookedByUser,
+  getBookedByID,
 };
