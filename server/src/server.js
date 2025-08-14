@@ -4,12 +4,15 @@ import dotenv from "dotenv";
 dotenv.config();
 const app = express();
 
-app.get("/",(req, res) =>{
+app.get("/", (req, res) => {
+  res.json({
+    name: config.name,
+    port: config.port || 5000,
+    status: "Running...",
+    version: config.version,
+  });
+});
 
-})
-
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>{
     console.log(`Server is running on ${PORT}`)
-
 });
