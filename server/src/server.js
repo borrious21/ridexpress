@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 
+import config from "./config/config";
+
 dotenv.config();
 const app = express();
 
@@ -13,6 +15,6 @@ app.get("/", (req, res) => {
   });
 });
 
-app.listen(PORT, () =>{
-    console.log(`Server is running on ${PORT}`)
+app.listen(config.port, () =>{
+    console.log(`Server is running on ${config.port}...`)
 });
