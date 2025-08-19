@@ -6,9 +6,11 @@ import { env } from './src/config/env.js';
 import authRoutes from './src/routes/authRoutes.js';
 import protectedRoutes from './src/routes/protectedRoutes.js';
 import { notFound, errorHandler } from './src/middleware/errorHandler.js';
+import start from "./src/server.js"
 
 const app = express();
 
+start()
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
