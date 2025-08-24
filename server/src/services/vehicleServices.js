@@ -11,4 +11,9 @@ const createVehicle = async (data, files, createdBy) => {
   });
 };
 
-export default { createVehicle };
+const getVehicles = async (query) => {
+  const products = await Vehicle.find();
+  return products;
+};
+
+export default { createVehicle, getVehicles };

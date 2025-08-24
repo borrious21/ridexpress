@@ -14,4 +14,10 @@ const createVehicle = async (req, res) => {
   }
 };
 
-export default { createVehicle };
+const getVehicles = async (req, res) => {
+  const products = await vehicleServices.getVehicles(req.query);
+
+  res.statusCode(200).json(products);
+};
+
+export default { createVehicle, getVehicles };
