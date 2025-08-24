@@ -27,4 +27,21 @@ const getVehiclesById = (req, res) => {
   res.status(200).json(vehicles);
 };
 
-export default { createVehicle, getVehicles, getVehiclesById };
+const updatedVehicles = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const data = await vehicleServices.updatedVehicles(
+      id,
+      req.body,
+      req.files,
+      req.user_id
+    );
+
+    res.status(201).json(data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+export default { createVehicle, getVehicles, getVehiclesById, updatedVehicles };
