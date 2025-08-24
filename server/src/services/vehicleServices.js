@@ -33,4 +33,23 @@ const getVehicles = async (query) => {
   return products;
 };
 
-export default { createVehicle, getVehicles };
+const getVehiclesById = async (id) => {
+  const vehicles = await Vehicle.findById(id);
+
+  if (!vehicles) {
+    throw {
+      statuscode: 404,
+      message: "Vehicles is not found",
+    };
+  }
+
+  if (!vehicles.stock < 1) {
+    throw {
+      statuscode: 404,
+      message: "Vehicles is not available",
+    };
+  }
+  return vehicles;
+};
+
+export default { createVehicle, getVehicles, getVehiclesById };

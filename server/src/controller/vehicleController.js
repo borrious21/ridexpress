@@ -20,4 +20,11 @@ const getVehicles = async (req, res) => {
   res.statusCode(200).json(products);
 };
 
-export default { createVehicle, getVehicles };
+const getVehiclesById = (req, res) => {
+  const id = req.params.id;
+  const vehicles = vehicleServices.getVehiclesById(id);
+
+  res.status(200).json(vehicles);
+};
+
+export default { createVehicle, getVehicles, getVehiclesById };
