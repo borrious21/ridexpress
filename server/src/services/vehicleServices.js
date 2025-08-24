@@ -12,7 +12,24 @@ const createVehicle = async (data, files, createdBy) => {
 };
 
 const getVehicles = async (query) => {
-  const products = await Vehicle.find();
+  const { brands, category, min, max, limit, name, offset, createdBy } = query;
+
+  const sort = JSON.parse(query.sort || "{}");
+  const filters = {};
+
+  if (brands) filters.brand = { $in: brands.split(",") };
+  if (category) filters.category = category;
+  if (min) filters.price = { $gte: min };
+  if (max) filters.price = { ...filters.price, $lte: max };
+  if (name) filters.name = { $regex: name, $options: "i" };
+
+  if (createdBy) filters.createdBy = createdBy;
+
+  const products = await Vehicle.find(filters)
+    .sort(sort)
+    .limit(limit)
+    .skip(offset);
+
   return products;
 };
 
