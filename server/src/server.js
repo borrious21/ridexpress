@@ -6,11 +6,18 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import logger from "./middleware/logger.js";
 import auth from "./middleware/auth.js";
+import connectCloudinary from "./config/cloudinary.js";
+import bodyParser from "body-parser";
+import multer from "multer";
+import vehicleRoutes from "./routes/vehicleRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
+const upload = multer({ storage: multer.memoryStorage() });
+connectCloudinary();
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -24,6 +31,7 @@ app.use(logger);
 app.use(auth);
 
 app.use("/api/auth", authRoutes);
+app.use("/api/vehicles", upload.array("photos", 10), vehicleRoutes);
 
 app.get("/", (req, res) => {
   res.json({
