@@ -1,6 +1,6 @@
 import authService from "../services/authServices.js";
 import jwt from "jsonwebtoken";
-import { createJWT, verifyJWT } from "../utils/tokens.js";
+import { createJWT } from "../utils/tokens.js";
 
 const signup = async (req, res) => {
   const input = req.body;
@@ -18,11 +18,11 @@ const signup = async (req, res) => {
 
     const user = await authService.signup(input);
 
-    const result = await verifyJWT(token);
+    const authToken = createJWT(data);
 
-    console.log(result);
+    console.log(user);
 
-    res.cookie("authToken", token, { maxAge: 900000 * 1000 });
+    res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
     return res
       .status(201)
