@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import logger from "./middleware/logger.js";
-import auth from "./middleware/auth.js";
 
 dotenv.config();
 
@@ -21,7 +20,6 @@ app.use(
 );
 app.use(cookieParser());
 app.use(logger);
-app.use(auth);
 
 app.use("/api/auth", authRoutes);
 

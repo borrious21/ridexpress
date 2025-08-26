@@ -18,11 +18,11 @@ const signup = async (req, res) => {
 
     const user = await authService.signup(input);
 
-    const result = await verifyJWT(token);
+    const authToken = createJWT(data);
 
-    console.log(result);
+    console.log(user);
 
-    res.cookie("authToken", token, { maxAge: 900000 * 1000 });
+    res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
     return res
       .status(201)
@@ -48,13 +48,11 @@ const login = async (req, res) => {
 
     const user = await authService.login(input);
 
-    const token = createJWT(user);
+    const authToken = createJWT(user);
 
-    const result = await verifyJWT(token);
+    console.log(user);
 
-    console.log(result);
-
-    res.cookie("authToken", token, { maxAge: 900000 * 1000 });
+    res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
     return res.status(200).json({ message: "Login successful", user });
   } catch (error) {
