@@ -18,11 +18,11 @@ const signup = async (req, res) => {
 
     const user = await authService.signup(input);
 
-    const token = createJWT(user);
+    const authToken = createJWT(user);
 
     console.log(user);
 
-    res.cookie("authToken", token, { maxAge: 900000 * 1000 });
+    res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
     return res
       .status(201)
@@ -48,11 +48,11 @@ const login = async (req, res) => {
 
     const user = await authService.login(input);
 
-    const token = createJWT(user);
+    const authToken = createJWT(user);
 
     console.log(result);
 
-    res.cookie("authToken", token, { maxAge: 900000 * 1000 });
+    res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
     return res.status(200).json({ message: "Login successful", user });
   } catch (error) {
@@ -61,4 +61,5 @@ const login = async (req, res) => {
       .json({ message: error.message || "Server error" });
   }
 };
+
 export default { signup, login };
