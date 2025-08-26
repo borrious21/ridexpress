@@ -50,7 +50,7 @@ const login = async (req, res) => {
 
     const authToken = createJWT(user);
 
-    console.log(result);
+    console.log(user);
 
     res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
