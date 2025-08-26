@@ -18,9 +18,9 @@ const signup = async (req, res) => {
 
     const user = await authService.signup(input);
 
-    const result = await verifyJWT(token);
+    const token = createJWT(user);
 
-    console.log(result);
+    console.log(user);
 
     res.cookie("authToken", token, { maxAge: 900000 * 1000 });
 
@@ -49,8 +49,6 @@ const login = async (req, res) => {
     const user = await authService.login(input);
 
     const token = createJWT(user);
-
-    const result = await verifyJWT(token);
 
     console.log(result);
 
