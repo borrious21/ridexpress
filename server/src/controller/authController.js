@@ -1,6 +1,6 @@
 import authService from "../services/authServices.js";
 import jwt from "jsonwebtoken";
-import { createJWT, verifyJWT } from "../utils/tokens.js";
+import { createJWT } from "../utils/tokens.js";
 
 const signup = async (req, res) => {
   const input = req.body;
