@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import logger from "./middleware/logger.js";
-import auth from "./middleware/auth.js";
 import connectCloudinary from "./config/cloudinary.js";
 import bodyParser from "body-parser";
 import multer from "multer";
@@ -28,7 +27,6 @@ app.use(
 );
 app.use(cookieParser());
 app.use(logger);
-app.use(auth);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/vehicles", upload.array("photos", 10), vehicleRoutes);
