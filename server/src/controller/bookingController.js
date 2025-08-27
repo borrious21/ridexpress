@@ -21,7 +21,7 @@ const createBooking = async (req, res) => {
 };
 
 const getBooking = async (req, res) => {
-  
+
   try {
     const booking = await bookingServices.getBooking();
     res.json(booking);
@@ -30,4 +30,15 @@ const getBooking = async (req, res) => {
   }
 };
 
-export default { createBooking, getBooking };
+const deleteBooking = async (req, res) => {
+
+  try {
+    await bookingServices.deleteBooking(req.params.id);
+
+    res.send("Deleted successfully");
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+export default { createBooking, getBooking, deleteBooking };

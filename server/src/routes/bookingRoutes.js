@@ -6,6 +6,9 @@ const router = express.Router();
 
 //URL: /api/booking
 router.get("/", bookingController.getBooking);
+
 router.post("/", auth, bookingController.createBooking);
+
+router.delete("/:id", bookingController.deleteBooking);
 
 export default router;

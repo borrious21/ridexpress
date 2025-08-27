@@ -1,6 +1,7 @@
 import vehicleServices from "../services/vehicleServices.js";
 
 const createVehicle = async (req, res) => {
+  
   try {
     const data = await vehicleServices.createVehicle(
       req.body,
