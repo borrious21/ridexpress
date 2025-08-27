@@ -5,6 +5,7 @@ const signup = async (req, res) => {
   const input = req.body;
 
   try {
+
     if (!input.password) {
       return res.status(400).json({ message: "Password is required" });
     }
@@ -31,8 +32,8 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   const input = req.body;
-
   try {
+
     if (!input) {
       return res.status(400).json({ message: "Required fields are required" });
     }
