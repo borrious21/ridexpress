@@ -6,12 +6,15 @@ const signup = async (req, res) => {
   const input = req.body;
 
   try {
+    
     if (!input.password) {
       return res.status(400).json({ message: "Password is required" });
     }
+
     if (!input.confirmPassword) {
       return res.status(400).json({ message: "Confirm Password is required" });
     }
+
     if (input.password !== input.confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
@@ -24,11 +27,9 @@ const signup = async (req, res) => {
 
     res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
-    return res
-      .status(201)
-      .json({ message: "User registered successfully", user });
+    res.status(201).json({ message: "User registered successfully", user });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
