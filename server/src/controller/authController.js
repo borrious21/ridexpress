@@ -23,8 +23,6 @@ const signup = async (req, res) => {
 
     const authToken = createJWT(data);
 
-    console.log(user);
-
     res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
     res.status(201).json({ message: "User registered successfully", user });
