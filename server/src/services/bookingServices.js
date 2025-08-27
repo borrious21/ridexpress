@@ -6,4 +6,9 @@ const createBooking = async (data, userID) => {
   return booking;
 };
 
-export default { createBooking };
+const getBooking = async (data) => {
+  const booking = await Booking.find();
+
+  return booking;
+}
+export default { createBooking, getBooking };

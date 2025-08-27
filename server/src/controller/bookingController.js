@@ -19,4 +19,13 @@ const createBooking = async (req, res) => {
   }
 };
 
-export default { createBooking };
+const getBooking = async (req, res) => {
+  try {
+    const booking = await bookingServices.getBooking();
+    res.json(booking);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+export default { createBooking, getBooking };
