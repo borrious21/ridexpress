@@ -1,11 +1,10 @@
 import authService from "../services/authServices.js";
-import { createJWT } from "../utils/tokens.js";
+import { createJWT, verifyJWT } from "../utils/tokens.js";
 
 const signup = async (req, res) => {
   const input = req.body;
 
   try {
-    
     if (!input.password) {
       return res.status(400).json({ message: "Password is required" });
     }
@@ -59,4 +58,5 @@ const login = async (req, res) => {
       .json({ message: error.message || "Server error" });
   }
 };
+
 export default { signup, login };
