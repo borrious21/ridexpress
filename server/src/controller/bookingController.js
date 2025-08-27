@@ -6,6 +6,7 @@ const createBooking = async (req, res) => {
   if (!input) {
     return res.status(400).send("Data should be include");
   }
+
   if (!input.bookingItems || !input.bookingItems.length) {
     return res.status(400).send("Booking items are required");
   }
@@ -20,6 +21,7 @@ const createBooking = async (req, res) => {
 };
 
 const getBooking = async (req, res) => {
+  
   try {
     const booking = await bookingServices.getBooking();
     res.json(booking);

@@ -2,13 +2,19 @@ import Booking from "../models/Booking.js";
 
 const createBooking = async (data, userID) => {
   const vehicleNumber = crypto.randomUUID();
-  const booking = await Booking.create({ ...data, userID, vehicleNumber });
+  const booking = await Booking.create({
+    ...data,
+    user: userID,
+    vehicleNumber,
+  });
+
   return booking;
 };
 
-const getBooking = async (data) => {
-  const booking = await Booking.find();
+const getBooking = async () => {
+  const booking = await Booking.find().populate("bookingItems.vehicle");
 
   return booking;
-}
+};
+
 export default { createBooking, getBooking };
