@@ -1,40 +1,39 @@
 import authService from "../services/authServices.js";
-import jwt from "jsonwebtoken";
-import { createJWT } from "../utils/tokens.js";
+import { createJWT, verifyJWT } from "../utils/tokens.js";
 
 const signup = async (req, res) => {
   const input = req.body;
 
   try {
+
     if (!input.password) {
       return res.status(400).json({ message: "Password is required" });
     }
+
     if (!input.confirmPassword) {
       return res.status(400).json({ message: "Confirm Password is required" });
     }
+
     if (input.password !== input.confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
     const user = await authService.signup(input);
 
-    const authToken = createJWT(user);
-
-    console.log(user);
+    const authToken = createJWT(data);
 
     res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
-    return res
-      .status(201)
-      .json({ message: "User registered successfully", user });
+    res.status(201).json({ message: "User registered successfully", user });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
 const login = async (req, res) => {
   const input = req.body;
   try {
+
     if (!input) {
       return res.status(400).json({ message: "Required fields are required" });
     }
@@ -42,6 +41,7 @@ const login = async (req, res) => {
     if (!input.email) {
       return res.status(400).json({ message: "Email is required" });
     }
+
     if (!input.password) {
       return res.status(400).json({ message: "Password is required" });
     }
@@ -50,13 +50,11 @@ const login = async (req, res) => {
 
     const authToken = createJWT(user);
 
-    console.log(result);
-
     res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
-    return res.status(200).json({ message: "Login successful", user });
+    res.status(200).json({ message: "Login successful", user });
   } catch (error) {
-    return res
+    res
       .status(error.statusCode || 500)
       .json({ message: error.message || "Server error" });
   }
