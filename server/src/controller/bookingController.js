@@ -79,6 +79,18 @@ const updateBooking = async (req, res) => {
   }
 };
 
+const bookingPayment = async (req, res) => {
+  const id = req.params.id;
+  const input = req.body;
+
+  try {
+    const booking = await bookingServices.bookingPayment(id, input);
+    res.json(booking);
+  } catch (error) {
+    res.status(error.statusCode || 500).send(error.message);
+  }
+};
+
 export default {
   createBooking,
   getBooking,
@@ -86,4 +98,5 @@ export default {
   getBookedByUser,
   getBookedByID,
   updateBooking,
+  bookingPayment,
 };

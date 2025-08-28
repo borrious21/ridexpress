@@ -19,4 +19,7 @@ router.put("/:id", roleBasedAuth(ADMIN), bookingController.updateBooking);
 
 router.delete("/:id", roleBasedAuth(ADMIN), bookingController.deleteBooking);
 
+//URL: /api/booking/:id/payment
+router.post("/:id/payment", auth, bookingController.bookingPayment);
+
 export default router;
