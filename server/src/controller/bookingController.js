@@ -81,7 +81,6 @@ const updateBooking = async (req, res) => {
 
 const bookingPayment = async (req, res) => {
   const id = req.params.id;
-  const input = req.body;
 
   try {
     const booking = await bookingServices.bookingPayment(id, input);

@@ -51,9 +51,17 @@ const updateBooking = async (id, data) => {
   return booking;
 };
 
-const bookingPayment = async (id, data) => {
-  return input;
-};
+const bookingPayment = async (id) => {
+  const book = await getBookedByID(id);
+
+  return await payment.payViaKhalti({
+    amount: book.totalAmount,
+    customer: book.user,
+    purchaseOrderID: book.id,
+    purchaseOrderName: book.vehicleNumber
+  })
+  return book;
+}; 
 
 
 export default {
