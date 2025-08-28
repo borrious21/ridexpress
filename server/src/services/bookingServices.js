@@ -24,7 +24,7 @@ const deleteBooking = async (id) => {
 };
 
 const getBookedByUser = async (userid) => {
-  const booking = await Booking.find({user: userid})
+  const booking = await Booking.find({ user: userid })
     .populate("bookingItems.vehicle")
     .populate("user", ["name", "email", "phone", "address"]);
 
@@ -39,10 +39,23 @@ const getBookedByID = async (id) => {
   return booking;
 };
 
+const updateBooking = async (id, data) => {
+  const booking = await Booking.findByIdAndUpdate(
+    id,
+    {
+      status: data.status,
+    },
+    { new: true }
+  );
+
+  return booking;
+};
+
 export default {
   createBooking,
   getBooking,
   deleteBooking,
   getBookedByUser,
   getBookedByID,
+  updateBooking,
 };
