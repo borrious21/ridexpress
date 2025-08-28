@@ -1,12 +1,11 @@
 import authService from "../services/authServices.js";
-import jwt from "jsonwebtoken";
-import { createJWT } from "../utils/tokens.js";
+import { createJWT, verifyJWT } from "../utils/tokens.js";
 
 const signup = async (req, res) => {
   const input = req.body;
 
   try {
-    
+
     if (!input.password) {
       return res.status(400).json({ message: "Password is required" });
     }
@@ -31,4 +30,34 @@ const signup = async (req, res) => {
   }
 };
 
-export default { signup };
+const login = async (req, res) => {
+  const input = req.body;
+  try {
+
+    if (!input) {
+      return res.status(400).json({ message: "Required fields are required" });
+    }
+
+    if (!input.email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    if (!input.password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+
+    const user = await authService.login(input);
+
+    const authToken = createJWT(user);
+
+    res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
+
+    res.status(200).json({ message: "Login successful", user });
+  } catch (error) {
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message || "Server error" });
+  }
+};
+
+export default { signup, login };

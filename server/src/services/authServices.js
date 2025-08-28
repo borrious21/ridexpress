@@ -25,4 +25,23 @@ const signup = async (data) => {
     roles: signupUser.roles,
   };
 };
-export default { signup };
+
+const login = async (data) => {
+  const user = await User.findOne({ email: data.email });
+
+  if (!user) throw { statusCode: 404, message: "User not found" };
+
+  const isMatch = bcrypt.compareSync(data.password, user.password);
+  if (!isMatch) throw { statusCode: 401, message: "Invalid email or password" };
+
+  return {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    address: user.address,
+    roles: user.roles,
+  };
+};
+
+export default { signup, login };
