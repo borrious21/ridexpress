@@ -6,9 +6,6 @@ const payViaKhalti = async (data) => {
 
   if (!data.amount) throw { statusCode: 404, message: "Amount not found" };
 
-  if (!data.returnUrl || data.websiteUrl)
-    throw { statusCode: 404, message: "Return and Website url not found" };
-
   const body = { 
     return_url: config.khalti.returnUrl,
     website_url: config.appUrl,
