@@ -41,4 +41,13 @@ const deleteBooking = async (req, res) => {
   }
 };
 
-export default { createBooking, getBooking, deleteBooking };
+const getBookedByUser = async (req, res) => {
+
+  try {
+    const booking = await bookingServices.getBookedByUser(req.user._id);
+    res.json(booking);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+export default { createBooking, getBooking, deleteBooking, getBookedByUser };
