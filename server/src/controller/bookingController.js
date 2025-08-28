@@ -83,7 +83,17 @@ const bookingPayment = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const booking = await bookingServices.bookingPayment(id, input);
+    const booking = await bookingServices.bookingPayment(id);
+    res.json(booking);
+  } catch (error) {
+    res.status(error.statusCode || 500).send(error.message);
+  }
+};
+const confirmBookingPayment = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const booking = await bookingServices.bookingPayment(id, req.body.status);
     res.json(booking);
   } catch (error) {
     res.status(error.statusCode || 500).send(error.message);
@@ -98,4 +108,5 @@ export default {
   getBookedByID,
   updateBooking,
   bookingPayment,
+  confirmBookingPayment,
 };
