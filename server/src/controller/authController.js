@@ -5,6 +5,7 @@ const signup = async (req, res) => {
   const input = req.body;
 
   try {
+    
     if (!input.password) {
       return res.status(400).json({ message: "Password is required" });
     }
