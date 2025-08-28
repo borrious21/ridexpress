@@ -10,6 +10,7 @@ import connectCloudinary from "./config/cloudinary.js";
 import bodyParser from "body-parser";
 import multer from "multer";
 import vehicleRoutes from "./routes/vehicleRoutes.js";
+import auth from "./middleware/auth.js";
 
 dotenv.config();
 
@@ -31,7 +32,7 @@ app.use(logger);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/vehicles", upload.array("photos", 10), vehicleRoutes);
-app.use("/api/booking", bookingRoutes);
+app.use("/api/booking", auth, bookingRoutes);
 
 app.get("/", (req, res) => {
   res.json({

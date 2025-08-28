@@ -11,6 +11,8 @@ router.get("/", auth, roleBasedAuth(ADMIN), bookingController.getBooking);
 
 router.get("/user", bookingController.getBookedByUser);
 
+router.get("/:id", auth, roleBasedAuth(ADMIN), bookingController.getBookedByID);
+
 router.post("/", auth, bookingController.createBooking);
 
 router.delete("/:id", roleBasedAuth(ADMIN), bookingController.deleteBooking);
