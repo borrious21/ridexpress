@@ -78,6 +78,10 @@ const bookingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    payment:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
+    }
   },
   { timestamps: true }
 );

@@ -51,6 +51,11 @@ const updateBooking = async (id, data) => {
   return booking;
 };
 
+const bookingPayment = async (id, data) => {
+  return input;
+};
+
+
 export default {
   createBooking,
   getBooking,
@@ -58,4 +63,5 @@ export default {
   getBookedByUser,
   getBookedByID,
   updateBooking,
+  bookingPayment
 };
