@@ -2,15 +2,7 @@ import bookingServices from "../services/bookingServices.js";
 
 const createBooking = async (req, res) => {
   const input = req.body;
-
-  if (!input) {
-    return res.status(400).send("Data should be include");
-  }
-
-  if (!input.bookingItems || !input.bookingItems.length) {
-    return res.status(400).send("Booking items are required");
-  }
-
+  
   try {
 
     if (!input) {
