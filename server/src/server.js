@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 import logger from "./middleware/logger.js";
 import connectCloudinary from "./config/cloudinary.js";
 import bodyParser from "body-parser";
@@ -30,6 +31,7 @@ app.use(logger);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/vehicles", upload.array("photos", 10), vehicleRoutes);
+app.use("/api/booking", bookingRoutes);
 
 app.get("/", (req, res) => {
   res.json({
