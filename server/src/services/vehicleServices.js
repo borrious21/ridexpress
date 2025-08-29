@@ -78,4 +78,14 @@ const updatedVehicles = async (id, data, files, userid) => {
   return updateData;
 };
 
-export default { createVehicle, getVehicles, getVehiclesById, updatedVehicles };
+const deleteVehicles = async (id) => {
+  await Vehicle.findByIdAndDelete(id);
+};
+
+export default {
+  createVehicle,
+  getVehicles,
+  getVehiclesById,
+  updatedVehicles,
+  deleteVehicles,
+};

@@ -44,4 +44,17 @@ const updatedVehicles = async (req, res) => {
   }
 };
 
-export default { createVehicle, getVehicles, getVehiclesById, updatedVehicles };
+const deleteVehicles = async (req, res) => {
+  const id = req.params.id;
+  await vehicleServices.deleteVehicles(id);
+
+  res.send("Vehicle is deleted");
+};
+
+export default {
+  createVehicle,
+  getVehicles,
+  getVehiclesById,
+  updatedVehicles,
+  deleteVehicles,
+};
