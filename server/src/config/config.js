@@ -11,6 +11,11 @@ const config = {
   jwtSecret:
     process.env.JWT_SECRET ||
     "e6b0f7b6f7a357a416f5c762f75531caecf815b4d96d00bc",
+  cloudinary: {
+    cloudName: process.env.CLOUD_NAME || "",
+    apiKey: process.env.API_KEY || "",
+    apiSecret: process.env.API_SECRET || "",
+  },
 };
 
 export default config;
