@@ -52,4 +52,30 @@ const getVehiclesById = async (id) => {
   return vehicles;
 };
 
-export default { createVehicle, getVehicles, getVehiclesById };
+const updatedVehicles = async (id, data, files, userid) => {
+  const vehicles = await Vehicle.findById(id);
+
+  if (vehicles.createdBy != userid) {
+    throw {
+      statuscode: 403,
+      message: "Access Denied",
+    };
+  }
+
+  const updatedData = data;
+  if (files.length > 0) {
+    const uploadedFiles = await uploadFile(files);
+    updatedData.imageUrls = uploadedFiles.map((item) => item?.url);
+  }
+
+  const updateData = await Vehicle.findByIdAndUpdate(
+    id,
+    { updateData },
+    {
+      new: true,
+    }
+  );
+  return updateData;
+};
+
+export default { createVehicle, getVehicles, getVehiclesById, updatedVehicles };
