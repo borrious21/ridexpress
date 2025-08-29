@@ -20,7 +20,7 @@ const signup = async (req, res) => {
 
     const user = await authService.signup(input);
 
-    const authToken = createJWT(user);
+    const authToken = createJWT(data);
 
     res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
@@ -34,7 +34,7 @@ const login = async (req, res) => {
   const input = req.body;
 
   try {
-
+    
     if (!input) {
       return res.status(400).json({ message: "Required fields are required" });
     }
