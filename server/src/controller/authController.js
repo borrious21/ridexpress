@@ -35,6 +35,8 @@ const login = async (req, res) => {
 
   try {
 
+  try {
+    
     if (!input) {
       return res.status(400).json({ message: "Required fields are required" });
     }
