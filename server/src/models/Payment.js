@@ -3,7 +3,7 @@ import {
   PAYMENT_STATUS_COMPLETED,
   PAYMENT_STATUS_FAILED,
   PAYMENT_STATUS_PENDING,
-} from "../constants/paymentStatus";
+} from "../constants/paymentStatus.js";
 
 const paymentSchema = new mongoose.Schema({
   amount: {
