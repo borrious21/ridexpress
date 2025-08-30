@@ -2,7 +2,7 @@ import bookingServices from "../services/bookingServices.js";
 
 const createBooking = async (req, res) => {
   const input = req.body;
-
+  
   try {
 
     if (!input) {
