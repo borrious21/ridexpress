@@ -1,13 +1,14 @@
 import axios from "axios";
-const ai = async (data) => {
+import config from "../config/config.js";
+const ai = async (promptMsg) => {
   const response = await axios.post(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+    config.gemini.Url,
     {
       contents: [
         {
           parts: [
             {
-              text: "Explain how AI works.",
+              text: promptMsg,
             },
           ],
         },
@@ -15,7 +16,7 @@ const ai = async (data) => {
     },
     {
       headers: {
-        "x-goog-api-key": "AIzaSyAE-cFE97OyvomvpOyhR82c9XIzIOAaN0c",
+        "x-goog-api-key": config.gemini.apiKey,
       },
     }
   );
