@@ -1,5 +1,5 @@
 import authService from "../services/authServices.js";
-import { createJWT, verifyJWT } from "../utils/tokens.js";
+import { createJWT } from "../utils/tokens.js";
 
 const signup = async (req, res) => {
   const input = req.body;

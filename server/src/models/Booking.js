@@ -12,7 +12,7 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: [true, "Vehicle Number is required"],
     },
-    userID: {
+    user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: [true, "User ID is required"],
