@@ -17,4 +17,10 @@ const getBooking = async () => {
   return booking;
 };
 
-export default { createBooking, getBooking };
+const deleteBooking = async (id) => {
+  const booking = await Booking.findByIdAndDelete(id);
+
+  return booking;
+};
+
+export default { createBooking, getBooking, deleteBooking };
