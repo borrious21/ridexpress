@@ -17,12 +17,11 @@ const createBooking = async (req, res) => {
 
     res.json(booking);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(error.statusCode || 500).send(error.message);
   }
 };
 
 const getBooking = async (req, res) => {
-
   try {
     const booking = await bookingServices.getBooking();
     res.json(booking);
@@ -32,7 +31,6 @@ const getBooking = async (req, res) => {
 };
 
 const deleteBooking = async (req, res) => {
-
   try {
     await bookingServices.deleteBooking(req.params.id);
 
@@ -42,4 +40,40 @@ const deleteBooking = async (req, res) => {
   }
 };
 
-export default { createBooking, getBooking, deleteBooking };
+const getBookedByUser = async (req, res) => {
+  const input = req.user._id;
+
+  if (!input) {
+    throw { status: 404, message: "Booking not Found" };
+  }
+
+  try {
+    const booking = await bookingServices.getBookedByUser(input);
+    res.status(200).json(booking);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+const getBookedByID = async (req, res) => {
+
+  const input = req.params.id;
+  if (!input) {
+    throw { status: 404, message: "Id not Found" };
+  }
+
+  try {
+    const booking = await bookingServices.getBookedByID(input);
+    res.status(200).json(booking);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+export default {
+  createBooking,
+  getBooking,
+  deleteBooking,
+  getBookedByUser,
+  getBookedByID,
+};

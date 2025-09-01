@@ -7,10 +7,14 @@ import { ADMIN } from "../constants/roles.js";
 const router = express.Router();
 
 //URL: /api/booking
-router.get("/", roleBasedAuth[ADMIN], bookingController.getBooking);
+router.get("/", auth, roleBasedAuth(ADMIN), bookingController.getBooking);
+
+router.get("/user", bookingController.getBookedByUser);
+
+router.get("/:id", auth, roleBasedAuth(ADMIN), bookingController.getBookedByID);
 
 router.post("/", auth, bookingController.createBooking);
 
-router.delete("/:id", roleBasedAuth[ADMIN], bookingController.deleteBooking);
+router.delete("/:id", roleBasedAuth(ADMIN), bookingController.deleteBooking);
 
 export default router;
