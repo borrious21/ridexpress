@@ -21,6 +21,10 @@ const config = {
     apiKey: process.env.KHALTI_SECRET_KEY || "",
     apiUrl: process.env.KHALTI_API_URL || "",
     returnUrl: process.env.KHALTI_RETURN_URL || "",
+  },
+  gemini:{
+    Url: process.env.GEMINI_URL || "",
+    apiKey: process.env.GEMINI_API_KEY || "",
   }
 };
 

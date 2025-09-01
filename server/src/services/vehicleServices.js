@@ -1,14 +1,24 @@
+import { VEHICLE_DESC } from "../constants/prompt.js";
 import Vehicle from "../models/Vehicle.js";
 import uploadFile from "../utils/file.js";
+import ai from "../utils/gemini.js";
 
 const createVehicle = async (data, files, createdBy) => {
   const uploadedFiles = await uploadFile(files);
 
-  return await Vehicle.create({
+  const promptMsg = VEHICLE_DESC.replace("%s", data.name)
+    .replace("%s", data.brand)
+    .replace("%s", data.model)
+    .replace("%s", data.type);
+
+  const aiDesc = await ai(promptMsg);
+  const createVehicle = await Vehicle.create({
     ...data,
     imageUrls: uploadedFiles.map((item) => item?.url), //here jaba array ma files halda diffrent data haru aauca eeuta file ko but we only need urls to store
     createdBy, // the data in database thats why we only write urls
+    description: data.description ?? aiDesc,
   });
+  return createVehicle;
 };
 
 const getVehicles = async (query) => {
