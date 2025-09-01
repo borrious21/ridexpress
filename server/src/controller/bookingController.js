@@ -56,8 +56,8 @@ const getBookedByUser = async (req, res) => {
 };
 
 const getBookedByID = async (req, res) => {
-
   const input = req.params.id;
+  
   if (!input) {
     throw { status: 404, message: "Id not Found" };
   }
@@ -70,10 +70,21 @@ const getBookedByID = async (req, res) => {
   }
 };
 
+const updateBooking = async (req, res) => {
+  try {
+    await bookingServices.updateBooking(req.params.id, req.body);
+
+    res.send("Updated successfully");
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 export default {
   createBooking,
   getBooking,
   deleteBooking,
   getBookedByUser,
   getBookedByID,
+  updateBooking,
 };
