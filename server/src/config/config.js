@@ -4,6 +4,7 @@ import { version } from "mongoose";
 dotenv.config();
 
 const config = {
+  appUrl: process.env.APP_URL || "",
   mongoDBUrl: process.env.MONGODB_URL || "",
   name: process.env.NAME || "RidExpress",
   port: process.env.PORT || 5000,
@@ -16,6 +17,11 @@ const config = {
     apiKey: process.env.API_KEY || "",
     apiSecret: process.env.API_SECRET || "",
   },
+  khalti:{
+    apiKey: process.env.KHALTI_SECRET_KEY || "",
+    apiUrl: process.env.KHALTI_API_URL || "",
+    returnUrl: process.env.KHALTI_RETURN_URL || "",
+  }
 };
 
 export default config;
