@@ -12,6 +12,7 @@ const config = {
   jwtSecret:
     process.env.JWT_SECRET ||
     "e6b0f7b6f7a357a416f5c762f75531caecf815b4d96d00bc",
+  resendEmailApiKey: process.env.RESEND_EMAIL_API_KEY || "",
   cloudinary: {
     cloudName: process.env.CLOUD_NAME || "",
     apiKey: process.env.API_KEY || "",
