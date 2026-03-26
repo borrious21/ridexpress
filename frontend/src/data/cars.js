@@ -206,7 +206,7 @@ export const cars = [
     id: "audi-r8",
     brand: "Audi",
     name: "R8 Coupe",
-    image: "https://images.unsplash.com/photo-1614200179396-2bdb77bc18ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     fuel: "Petrol",
     transmission: "Automatic",
     rating: 5.0,
