@@ -20,7 +20,7 @@ const signup = async (req, res) => {
 
     const user = await authService.signup(input);
 
-    const authToken = createJWT(data);
+    const authToken = createJWT(user);
 
     res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
 
@@ -105,7 +105,7 @@ const ResetPassword = async (req, res) => {
       input.password
     );
 
-    res.status(201).json( data );
+    res.status(200).json({ message: "Password reset successful", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
