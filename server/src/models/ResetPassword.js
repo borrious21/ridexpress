@@ -7,7 +7,7 @@ const ResetPasswordSchema = new mongoose.Schema({
   },
   expiresAt: {
     type: Date,
-    default: () => Date.now() + 3600000, // 1 hour
+    default: () => Date.now() + 3600000, 
   },
     isUsed: {
         type: Boolean,
