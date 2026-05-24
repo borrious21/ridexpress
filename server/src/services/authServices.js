@@ -3,14 +3,14 @@ import ResetPasswordModel from "../models/ResetPassword.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import config from "../config/config.js";
-import sendEmail from "../utils/email.js"; 
+import sendEmail from "../utils/email.js";
 
 const signup = async (data) => {
   const user = await User.findOne({ email: data.email });
 
   if (user) throw { statusCode: 409, message: "User already exists" };
 
-  const hashedPassword = bcrypt.hashSync(data.password);
+  const hashedPassword = bcrypt.hashSync(data.password, 10);
 
   const signupUser = await User.create({
     name: data.name,
@@ -50,14 +50,14 @@ const login = async (data) => {
 
 const forgotPassword = async (email) => {
   const user = await User.findOne({ email });
-  if (!user) return;
+  if (!user) return { message: "Password reset link sent to your email" };
 
   const token = crypto.randomUUID();
 
   await ResetPasswordModel.create({
     token,
     userId: user._id,
-    expiresAt: Date.now() + 1000 * 60 * 15, 
+    expiresAt: Date.now() + 1000 * 60 * 15,
     isUsed: false,
   });
 
@@ -67,14 +67,14 @@ const forgotPassword = async (email) => {
       <div style="padding:20px;">
         <h1>Please click the link to reset your password</h1>
         <a href="${config.appUrl}/reset-password?token=${token}&userId=${user._id}"
-        style="
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        ">Reset Password</a>
+          style="
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+          ">Reset Password</a>
       </div>
     `,
   });
@@ -82,7 +82,7 @@ const forgotPassword = async (email) => {
   return { message: "Password reset link sent to your email" };
 };
 
-const resetPasswordService = async (userId, token, newPassword) => {
+const ResetPassword = async (userId, token, newPassword) => {
   const data = await ResetPasswordModel.findOne({
     userId,
     expiresAt: { $gt: Date.now() },
@@ -105,4 +105,4 @@ const resetPasswordService = async (userId, token, newPassword) => {
   return { message: "Password has been reset successfully" };
 };
 
-export default { signup, login, forgotPassword, resetPasswordService };
+export default { signup, login, forgotPassword, ResetPassword };

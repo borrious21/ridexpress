@@ -1,27 +1,27 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import config from "../config/config.js";
 
-async function sendEmail(recipient, subject, message) {
-  try {
-    const resend = new Resend(config.resendEmailApiKey);
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: config.gmail.user,
+    pass: config.gmail.appPassword,
+  },
+});
 
-    const { data, error } = await resend.emails.send({
-      from: "randomname.co@gmail.com", 
-      to: [recipient],
+async function sendEmail(recipient, { subject, body }) {
+  try {
+    await transporter.sendMail({
+      from: `"No Reply" <${config.gmail.user}>`,
+      to: recipient,
       subject,
       html: body,
     });
-
-    if (error) {
-      console.error("Email error:", error);
-      return { success: false, error };
-    }
-
-    return { success: true, data };
+    return { success: true };
   } catch (err) {
-    console.error("Unexpected error:", err);
+    console.error("Email error:", err);
     return { success: false, error: err };
   }
 }
 
-export default { sendEmail };
+export default sendEmail;
