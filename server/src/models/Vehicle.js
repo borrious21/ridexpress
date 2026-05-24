@@ -41,12 +41,6 @@ const vehicleSchema = new mongoose.Schema(
 
     description: { type: String },
 
-    createdAt: {
-      type: Date,
-      default: Date.now(),
-      immutable: true,
-    },
-
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
