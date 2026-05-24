@@ -84,10 +84,7 @@ const forgotPassword = async (email) => {
 };
 
 const resetPassword = async (userId, token, newPassword) => {
-  console.log("=== RESET PASSWORD DEBUG ===");
-  console.log("userId received:", userId);
-  console.log("token received:", token);
-  console.log("now:", new Date().toISOString());
+
 
   let objectId;
   try {
@@ -97,17 +94,13 @@ const resetPassword = async (userId, token, newPassword) => {
   }
 
   const allTokens = await ResetPasswordModel.find({ userId: objectId });
-  console.log("All tokens in DB for this user:", JSON.stringify(allTokens, null, 2));
-
+ 
   const data = await ResetPasswordModel.findOne({
     userId: objectId,
     token: token,
     isUsed: false,
     expiresAt: { $gt: new Date() },
   });
-
-  console.log("Matched token doc:", data);
-  console.log("=== END DEBUG ===");
 
   if (!data) {
     throw { statusCode: 400, message: "Invalid or expired password reset token" };
