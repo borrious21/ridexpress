@@ -26,11 +26,6 @@ const vehicleSchema = new mongoose.Schema(
       type: Number,
     },
 
-    pricePerDay: {
-      type: Number,
-      required: [true, "Vehicle price is required"],
-    },
-
     available: {
       type: Boolean,
     },
