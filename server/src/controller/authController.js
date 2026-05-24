@@ -20,11 +20,24 @@ const signup = async (req, res) => {
 
     const user = await authService.signup(input);
 
-    const authToken = createJWT(user);
+   const authToken = createJWT({
+    id: user._id,
+    email: user.email,
+    roles: user.roles
+  });
 
-    res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
+  res.cookie("authToken", authToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
+    maxAge: 900000 * 1000
+  });
 
-    res.status(201).json({ message: "User registered successfully", user });
+    res.status(201).json({
+      message: "User registered successfully",
+      user,
+      token: authToken
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -34,26 +47,31 @@ const login = async (req, res) => {
   const input = req.body;
 
   try {
-    
-    if (!input) {
-      return res.status(400).json({ message: "Required fields are required" });
-    }
-
-    if (!input.email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
-
-    if (!input.password) {
-      return res.status(400).json({ message: "Password is required" });
-    }
+    if (!input.email || !input.password) {
+       return res.status(400).json({
+        message: "Email and password are required"
+      });}
 
     const user = await authService.login(input);
 
-    const authToken = createJWT(user);
+    const authToken = createJWT({
+      id: user._id,
+      email: user.email,
+      roles: user.roles
+    });
 
-    res.cookie("authToken", authToken, { maxAge: 900000 * 1000 });
+    res.cookie("authToken", authToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 900000 * 1000
+    });
 
-    res.status(200).json({ message: "Login successful", user });
+    res.status(200).json({
+      message: "Login successful",
+      user,
+      token: authToken
+    });
   } catch (error) {
     res
       .status(error.statusCode || 500)

@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import ResetPasswordModel from "../models/ResetPassword.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import mongoose from "mongoose";
 import config from "../config/config.js";
 import sendEmail from "../utils/email.js";
 
@@ -82,27 +83,43 @@ const forgotPassword = async (email) => {
   return { message: "Password reset link sent to your email" };
 };
 
-const ResetPassword = async (userId, token, newPassword) => {
-  const data = await ResetPasswordModel.findOne({
-    userId,
-    expiresAt: { $gt: Date.now() },
-  }).sort({ createdAt: -1 });
+const resetPassword = async (userId, token, newPassword) => {
+  console.log("=== RESET PASSWORD DEBUG ===");
+  console.log("userId received:", userId);
+  console.log("token received:", token);
+  console.log("now:", new Date().toISOString());
 
-  if (!data || data.token !== token) {
-    throw { statusCode: 400, message: "Invalid or expired password reset token" };
+  let objectId;
+  try {
+    objectId = new mongoose.Types.ObjectId(userId);
+  } catch (e) {
+    throw { statusCode: 400, message: "Invalid userId format" };
   }
 
-  if (data.isUsed) {
-    throw { statusCode: 400, message: "Password reset token has already been used" };
+  const allTokens = await ResetPasswordModel.find({ userId: objectId });
+  console.log("All tokens in DB for this user:", JSON.stringify(allTokens, null, 2));
+
+  const data = await ResetPasswordModel.findOne({
+    userId: objectId,
+    token: token,
+    isUsed: false,
+    expiresAt: { $gt: new Date() },
+  });
+
+  console.log("Matched token doc:", data);
+  console.log("=== END DEBUG ===");
+
+  if (!data) {
+    throw { statusCode: 400, message: "Invalid or expired password reset token" };
   }
 
   const hashedPassword = bcrypt.hashSync(newPassword, 10);
 
-  await User.findByIdAndUpdate(userId, { password: hashedPassword });
+  await User.findByIdAndUpdate(objectId, { password: hashedPassword });
 
   await ResetPasswordModel.findByIdAndUpdate(data._id, { isUsed: true });
 
   return { message: "Password has been reset successfully" };
 };
 
-export default { signup, login, forgotPassword, ResetPassword };
+export default { signup, login, forgotPassword, ResetPassword: resetPassword };
