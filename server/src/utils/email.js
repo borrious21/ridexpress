@@ -24,4 +24,4 @@ async function sendEmail(recipient, subject, message) {
   }
 }
 
-export { sendEmail };
+export default { sendEmail };
