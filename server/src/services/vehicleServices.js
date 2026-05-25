@@ -4,21 +4,29 @@ import uploadFile from "../utils/file.js";
 import ai from "../utils/gemini.js";
 
 const createVehicle = async (data, files, createdBy) => {
-  const uploadedFiles = await uploadFile(files);
+  const imageUrls = [];
 
-  const promptMsg = VEHICLE_DESC.replace("%s", data.name)
+  if (files && files.length > 0) {
+    const uploadedFiles = await uploadFile(files);
+    imageUrls.push(...uploadedFiles.map((item) => item.secure_url)); 
+  }
+
+  const promptMsg = VEHICLE_DESC
+    .replace("%s", data.name)
     .replace("%s", data.brand)
     .replace("%s", data.model)
     .replace("%s", data.type);
 
   const aiDesc = await ai(promptMsg);
-  const createVehicle = await Vehicle.create({
+
+  const vehicle = await Vehicle.create({  
     ...data,
-    imageUrls: uploadedFiles.map((item) => item?.url), //here jaba array ma files halda diffrent data haru aauca eeuta file ko but we only need urls to store
-    createdBy, // the data in database thats why we only write urls
+    imageUrls,
+    createdBy,
     description: data.description ?? aiDesc,
   });
-  return createVehicle;
+
+  return vehicle;
 };
 
 const getVehicles = async (query) => {
@@ -29,63 +37,50 @@ const getVehicles = async (query) => {
 
   if (brands) filters.brand = { $in: brands.split(",") };
   if (category) filters.category = category;
-  if (min) filters.price = { $gte: min };
-  if (max) filters.price = { ...filters.price, $lte: max };
+  if (min) filters.pricePerDay = { $gte: Number(min) };         // ✅ pricePerDay matches schema
+  if (max) filters.pricePerDay = { ...filters.pricePerDay, $lte: Number(max) };
   if (name) filters.name = { $regex: name, $options: "i" };
-
   if (createdBy) filters.createdBy = createdBy;
 
   const products = await Vehicle.find(filters)
     .sort(sort)
-    .limit(limit)
-    .skip(offset);
+    .limit(Number(limit) || 10)   // ✅ fallback so it doesn't return 0 results
+    .skip(Number(offset) || 0);
 
   return products;
 };
 
 const getVehiclesById = async (id) => {
-  const vehicles = await Vehicle.findById(id);
+  const vehicle = await Vehicle.findById(id);
 
-  if (!vehicles) {
-    throw {
-      statuscode: 404,
-      message: "Vehicles is not found",
-    };
+  if (!vehicle) {
+    throw { statusCode: 404, message: "Vehicle not found" };  // ✅ statusCode capital C
   }
 
-  if (!vehicles.stock < 1) {
-    throw {
-      statuscode: 404,
-      message: "Vehicles is not available",
-    };
-  }
-  return vehicles;
+  return vehicle;
 };
 
-const updatedVehicles = async (id, data, files, userid) => {
-  const vehicles = await Vehicle.findById(id);
+const updatedVehicles = async (id, data, files, userId) => {
+  const vehicle = await Vehicle.findById(id);
 
-  if (vehicles.createdBy != userid) {
-    throw {
-      statuscode: 403,
-      message: "Access Denied",
-    };
+  if (!vehicle) {
+    throw { statusCode: 404, message: "Vehicle not found" };
   }
 
-  const updatedData = data;
-  if (files.length > 0) {
+  if (String(vehicle.createdBy) !== String(userId)) {  // ✅ strict string comparison
+    throw { statusCode: 403, message: "Access Denied" };
+  }
+
+  const updatedData = { ...data };  // ✅ spread to avoid mutating original
+
+  if (files && files.length > 0) {  // ✅ guard against undefined files
     const uploadedFiles = await uploadFile(files);
-    updatedData.imageUrls = uploadedFiles.map((item) => item?.url);
+    updatedData.imageUrls = uploadedFiles.map((item) => item.secure_url); // ✅ secure_url
   }
 
-  const updateData = await Vehicle.findByIdAndUpdate(
-    id,
-    { updateData },
-    {
-      new: true,
-    }
-  );
-  return updateData;
+  const result = await Vehicle.findByIdAndUpdate(id, updatedData, { new: true }); // ✅ no { }
+
+  return result;
 };
 
 const deleteVehicles = async (id) => {
