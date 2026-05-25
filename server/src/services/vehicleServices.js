@@ -37,14 +37,14 @@ const getVehicles = async (query) => {
 
   if (brands) filters.brand = { $in: brands.split(",") };
   if (category) filters.category = category;
-  if (min) filters.pricePerDay = { $gte: Number(min) };         // ✅ pricePerDay matches schema
+  if (min) filters.pricePerDay = { $gte: Number(min) };         
   if (max) filters.pricePerDay = { ...filters.pricePerDay, $lte: Number(max) };
   if (name) filters.name = { $regex: name, $options: "i" };
   if (createdBy) filters.createdBy = createdBy;
 
   const products = await Vehicle.find(filters)
     .sort(sort)
-    .limit(Number(limit) || 10)   // ✅ fallback so it doesn't return 0 results
+    .limit(Number(limit) || 10)   
     .skip(Number(offset) || 0);
 
   return products;
@@ -54,7 +54,7 @@ const getVehiclesById = async (id) => {
   const vehicle = await Vehicle.findById(id);
 
   if (!vehicle) {
-    throw { statusCode: 404, message: "Vehicle not found" };  // ✅ statusCode capital C
+    throw { statusCode: 404, message: "Vehicle not found" };  
   }
 
   return vehicle;
@@ -67,18 +67,18 @@ const updatedVehicles = async (id, data, files, userId) => {
     throw { statusCode: 404, message: "Vehicle not found" };
   }
 
-  if (String(vehicle.createdBy) !== String(userId)) {  // ✅ strict string comparison
+  if (String(vehicle.createdBy) !== String(userId)) {  
     throw { statusCode: 403, message: "Access Denied" };
   }
 
-  const updatedData = { ...data };  // ✅ spread to avoid mutating original
+  const updatedData = { ...data };  
 
-  if (files && files.length > 0) {  // ✅ guard against undefined files
+  if (files && files.length > 0) {  
     const uploadedFiles = await uploadFile(files);
-    updatedData.imageUrls = uploadedFiles.map((item) => item.secure_url); // ✅ secure_url
+    updatedData.imageUrls = uploadedFiles.map((item) => item.secure_url); 
   }
 
-  const result = await Vehicle.findByIdAndUpdate(id, updatedData, { new: true }); // ✅ no { }
+  const result = await Vehicle.findByIdAndUpdate(id, updatedData, { new: true }); 
 
   return result;
 };
