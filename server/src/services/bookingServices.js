@@ -1,14 +1,15 @@
 import { PAYMENT_STATUS_COMPLETED } from "../constants/paymentStatus.js";
+import { BOOKING_STATUS_CONFIRMED } from "../constants/bookingStatus.js";
 import Booking from "../models/Booking.js";
 import Payment from "../models/Payment.js";
 import payment from "../utils/payment.js";
 import crypto from "crypto";
 
-const createBooking = async (data, userID) => {
+const createBooking = async (data, user) => {
   const vehicleNumber = crypto.randomUUID();
   const booking = await Booking.create({
     ...data,
-    user: userID,
+    user: user._id ?? user.id,
     vehicleNumber,
   });
 
@@ -17,13 +18,11 @@ const createBooking = async (data, userID) => {
 
 const getBooking = async () => {
   const booking = await Booking.find().populate("bookingItems.vehicle");
-
   return booking;
 };
 
 const deleteBooking = async (id) => {
   const booking = await Booking.findByIdAndDelete(id);
-
   return booking;
 };
 
@@ -48,9 +47,7 @@ const getBookedByID = async (id) => {
 const updateBooking = async (id, data) => {
   const booking = await Booking.findByIdAndUpdate(
     id,
-    {
-      status: data.status,
-    },
+    { status: data.status },
     { new: true }
   );
 
@@ -59,21 +56,26 @@ const updateBooking = async (id, data) => {
 
 const bookingPayment = async (id) => {
   const book = await getBookedByID(id);
+
+  if (!book) {
+    throw { statusCode: 404, message: "Booking not found" };
+  }
+
   const transactionId = crypto.randomUUID();
 
-  const bookingPayment = await Payment.create({
-    amount: book.totalAmount,
+  const bookingPaymentRecord = await Payment.create({
+    amount: book.totalPrice,
     method: "online",
     transactionId,
   });
 
   await Booking.findByIdAndUpdate(id, {
-    payment: bookingPayment._id,
-    status: "completed",
+    payment: bookingPaymentRecord._id,
+    status: "pending",
   });
 
   return await payment.payViaKhalti({
-    amount: book.totalAmount,
+    amount: book.totalPrice,
     customer: book.user,
     purchaseOrderID: book.id,
     purchaseOrderName: book.vehicleNumber,
@@ -82,20 +84,33 @@ const bookingPayment = async (id) => {
 
 const confirmPayment = async (id, status) => {
   const booking = await getBookedByID(id);
-  if (status.toUpperCase() != PAYMENT_STATUS_COMPLETED) {
+
+  if (!booking) {
+    throw { statusCode: 404, message: "Booking not found" };
+  }
+
+  if (!booking.payment) {
+    throw { statusCode: 400, message: "Payment not initiated. Call POST /api/booking/:id/payment first." };
+  }
+
+  if (!status) {
+    throw { statusCode: 400, message: "Payment status is required" };
+  }
+
+  if (status.toUpperCase() !== PAYMENT_STATUS_COMPLETED) {
     await Payment.findByIdAndUpdate(booking.payment._id, {
       status: "failed",
     });
-    throw { statusCode: 404, message: "Payment is not completed" };
+    throw { statusCode: 400, message: "Payment is not completed" };
   }
+
   await Payment.findByIdAndUpdate(booking.payment._id, {
     status: PAYMENT_STATUS_COMPLETED,
   });
+
   return await Booking.findByIdAndUpdate(
     id,
-    {
-      status: BOOKING_STATUS_CONFIRMED,
-    },
+    { status: BOOKING_STATUS_CONFIRMED },
     { new: true }
   );
 };
