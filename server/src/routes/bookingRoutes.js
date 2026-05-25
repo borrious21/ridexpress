@@ -9,15 +9,15 @@ const router = express.Router();
 //URL: /api/booking
 router.get("/", auth, roleBasedAuth(ADMIN), bookingController.getBooking);
 
-router.get("/user", bookingController.getBookedByUser);
+router.get("/user", auth, bookingController.getBookedByUser);
 
 router.get("/:id", auth, roleBasedAuth(ADMIN), bookingController.getBookedByID);
 
 router.post("/", auth, bookingController.createBooking);
 
-router.put("/:id", roleBasedAuth(ADMIN), bookingController.updateBooking);
+router.put("/:id", auth, roleBasedAuth(ADMIN), bookingController.updateBooking);
 
-router.delete("/:id", roleBasedAuth(ADMIN), bookingController.deleteBooking);
+router.delete("/:id", auth, roleBasedAuth(ADMIN), bookingController.deleteBooking);
 
 //URL: /api/booking/:id/payment
 router.post("/:id/payment", auth, bookingController.bookingPayment);
