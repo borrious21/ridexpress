@@ -11,6 +11,6 @@ router.post("/login", authController.login);
 // URL: /api/auth/forgot-password
 router.post("/forgot-password", authController.forgotPassword);
 
-router.post("/reset-password", authController.ResetPassword);
+router.post("/reset-password", authController.resetPassword);
 
 export default router;

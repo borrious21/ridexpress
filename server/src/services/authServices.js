@@ -9,7 +9,9 @@ import sendEmail from "../utils/email.js";
 const signup = async (data) => {
   const user = await User.findOne({ email: data.email });
 
-  if (user) throw { statusCode: 409, message: "User already exists" };
+  if (user) {
+    throw { statusCode: 409, message: "User already exists" };
+  }
 
   const hashedPassword = bcrypt.hashSync(data.password, 10);
 
@@ -34,10 +36,15 @@ const signup = async (data) => {
 const login = async (data) => {
   const user = await User.findOne({ email: data.email });
 
-  if (!user) throw { statusCode: 404, message: "User not found" };
+  if (!user) {
+    throw { statusCode: 404, message: "User not found" };
+  }
 
   const isMatch = bcrypt.compareSync(data.password, user.password);
-  if (!isMatch) throw { statusCode: 401, message: "Invalid email or password" };
+
+  if (!isMatch) {
+    throw { statusCode: 401, message: "Invalid email or password" };
+  }
 
   return {
     _id: user._id,
@@ -51,14 +58,19 @@ const login = async (data) => {
 
 const forgotPassword = async (email) => {
   const user = await User.findOne({ email });
-  if (!user) return { message: "Password reset link sent to your email" };
+
+  if (!user) {
+    return { message: "Password reset link sent to your email" };
+  }
+
+  await ResetPasswordModel.deleteMany({ userId: user._id });
 
   const token = crypto.randomUUID();
 
   await ResetPasswordModel.create({
     token,
     userId: user._id,
-    expiresAt: Date.now() + 1000 * 60 * 15,
+    expiresAt: new Date(Date.now() + 1000 * 60 * 15),
     isUsed: false,
   });
 
@@ -68,14 +80,16 @@ const forgotPassword = async (email) => {
       <div style="padding:20px;">
         <h1>Please click the link to reset your password</h1>
         <a href="${config.appUrl}/reset-password?token=${token}&userId=${user._id}"
-          style="
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-          ">Reset Password</a>
+        style="
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        ">
+        Reset Password
+        </a>
       </div>
     `,
   });
@@ -84,35 +98,46 @@ const forgotPassword = async (email) => {
 };
 
 const resetPassword = async (userId, token, newPassword) => {
-
-
   let objectId;
+
   try {
     objectId = new mongoose.Types.ObjectId(userId);
   } catch (e) {
     throw { statusCode: 400, message: "Invalid userId format" };
   }
 
-  const allTokens = await ResetPasswordModel.find({ userId: objectId });
- 
   const data = await ResetPasswordModel.findOne({
     userId: objectId,
-    token: token,
+    token,
     isUsed: false,
     expiresAt: { $gt: new Date() },
   });
 
   if (!data) {
-    throw { statusCode: 400, message: "Invalid or expired password reset token" };
+    throw {
+      statusCode: 400,
+      message: "Invalid or expired password reset token",
+    };
   }
 
   const hashedPassword = bcrypt.hashSync(newPassword, 10);
 
-  await User.findByIdAndUpdate(objectId, { password: hashedPassword });
+  await User.findByIdAndUpdate(userId, {
+    password: hashedPassword,
+  });
 
-  await ResetPasswordModel.findByIdAndUpdate(data._id, { isUsed: true });
+  await ResetPasswordModel.findByIdAndUpdate(data._id, {
+    isUsed: true,
+  });
 
-  return { message: "Password has been reset successfully" };
+  return {
+    message: "Password has been reset successfully",
+  };
 };
 
-export default { signup, login, forgotPassword, ResetPassword: resetPassword };
+export default {
+  signup,
+  login,
+  forgotPassword,
+  resetPassword,
+};

@@ -1,11 +1,19 @@
 import authService from "../services/authServices.js";
 import { createJWT } from "../utils/tokens.js";
 
+const COOKIE_MAX_AGE = 15 * 60 * 1000;
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: false,
+  sameSite: "strict",
+  maxAge: COOKIE_MAX_AGE,
+};
+
 const signup = async (req, res) => {
   const input = req.body;
 
   try {
-
     if (!input.password) {
       return res.status(400).json({ message: "Password is required" });
     }
@@ -20,26 +28,23 @@ const signup = async (req, res) => {
 
     const user = await authService.signup(input);
 
-   const authToken = createJWT({
-    id: user._id,
-    email: user.email,
-    roles: user.roles
-  });
+    const authToken = createJWT({
+      id: user._id,
+      email: user.email,
+      roles: user.roles,
+    });
 
-  res.cookie("authToken", authToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "strict",
-    maxAge: 900000 * 1000
-  });
+    res.cookie("authToken", authToken, cookieOptions);
 
     res.status(201).json({
       message: "User registered successfully",
       user,
-      token: authToken
+      token: authToken,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
   }
 };
 
@@ -48,85 +53,92 @@ const login = async (req, res) => {
 
   try {
     if (!input.email || !input.password) {
-       return res.status(400).json({
-        message: "Email and password are required"
-      });}
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
 
     const user = await authService.login(input);
 
     const authToken = createJWT({
       id: user._id,
       email: user.email,
-      roles: user.roles
+      roles: user.roles,
     });
 
-    res.cookie("authToken", authToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-      maxAge: 900000 * 1000
-    });
+    res.cookie("authToken", authToken, cookieOptions);
 
     res.status(200).json({
       message: "Login successful",
       user,
-      token: authToken
+      token: authToken,
     });
   } catch (error) {
-    res
-      .status(error.statusCode || 500)
-      .json({ message: error.message || "Server error" });
+    res.status(error.statusCode || 500).json({
+      message: error.message || "Server error",
+    });
   }
 };
 
 const forgotPassword = async (req, res) => {
   const input = req.body;
-  
-  try{
+
+  try {
     if (!input.email) {
       return res.status(400).json({ message: "Email is required" });
+    }
+
+    const data = await authService.forgotPassword(input.email);
+
+    res.json(data);
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
   }
-
-  const data = await authService.forgotPassword(input.email);
-
-  res.json(data);
-} catch (error) {
-  res.status(error.statusCode || 500).send({ message: error.message });
-}
 };
 
-const ResetPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
   const input = req.body;
   const query = req.query;
 
   try {
-
-     if (!query.token || !query.userId) {
-      return res.status(400).json({ message: "Token and UserID are required." });
+    if (!query.token || !query.userId) {
+      return res.status(400).json({
+        message: "Token and UserID are required.",
+      });
     }
 
     if (!input.password) {
-      return res.status(400).json({ message: "Password is required" });
+      return res.status(400).json({
+        message: "Password is required",
+      });
     }
 
     if (!input.confirmPassword) {
-      return res.status(400).json({ message: "Confirm Password is required" });
+      return res.status(400).json({
+        message: "Confirm Password is required",
+      });
     }
 
     if (input.password !== input.confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
+      return res.status(400).json({
+        message: "Passwords do not match",
+      });
     }
 
-    const user = await authService.ResetPassword(
-      query.userId, 
-      query.token, 
+    const result = await authService.resetPassword(
+      query.userId,
+      query.token,
       input.password
     );
 
-    res.status(200).json({ message: "Password reset successful", user });
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(error.statusCode || 500).json({
+      message: error.message,
+    });
   }
 };
 
-export default { signup, login, forgotPassword, ResetPassword };
+export default { signup, login, forgotPassword, resetPassword };
