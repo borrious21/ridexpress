@@ -18,14 +18,6 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
-    if (!input.confirmPassword) {
-      return res.status(400).json({ message: "Confirm Password is required" });
-    }
-
-    if (input.password !== input.confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
-
     const user = await authService.signup(input);
 
     const authToken = createJWT({
